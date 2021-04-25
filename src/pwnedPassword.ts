@@ -15,21 +15,20 @@ import { pwnedPasswordRange } from './pwnedPasswordRange';
  * @returns {Promise<number>} a Promise which resolves to the number of times
  * the password has been exposed in a breach, or rejects with an Error
  * @example
- * pwnedPassword('f00b4r')
- *   .then(numPwns => {
- *     // truthy check or numeric condition
- *     if (numPwns) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const numPwns = await pwnedPassword("f00b4r");
+ *   // truthy check or numeric condition
+ *   if (numPwns) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @see https://haveibeenpwned.com/api/v3#PwnedPasswords
  */
-export function pwnedPassword(
+export async function pwnedPassword(
   password: string,
   options: { baseUrl?: string; userAgent?: string } = {},
 ): Promise<number> {
@@ -39,7 +38,6 @@ export function pwnedPassword(
   const prefix = hash.slice(0, 5);
   const suffix = hash.slice(5);
 
-  return pwnedPasswordRange(prefix, options).then(
-    (range) => range[suffix] || 0,
-  );
+  const range = await pwnedPasswordRange(prefix, options);
+  return range[suffix] || 0;
 }

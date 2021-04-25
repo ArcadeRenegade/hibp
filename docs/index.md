@@ -47,22 +47,11 @@ use it in the browser.
 
 ## Usage
 
-##### ECMAScript module syntax:
-
 ```javascript
 // import individual modules as needed
 import { dataClasses, search } from 'hibp';
 // or, import all modules into a local namespace
 import * as hibp from 'hibp';
-```
-
-##### CommonJS module syntax:
-
-```javascript
-// require individual modules as needed
-const { dataClasses, search } = require('hibp');
-// or, require all modules into a local namespace
-const hibp = require('hibp');
 ```
 
 The following modules are available:
@@ -85,8 +74,9 @@ detailed usage information and examples.
 ```javascript
 import { search } from 'hibp';
 
-search('someAccountOrEmail', { apiKey: 'my-api-key' })
-  .then((data) => {
+async function main() {
+  try {
+    const data = await search('someAccountOrEmail', { apiKey: 'my-api-key' });
     if (data.breaches || data.pastes) {
       // Bummer...
       console.log(data);
@@ -94,11 +84,13 @@ search('someAccountOrEmail', { apiKey: 'my-api-key' })
       // Phew! We're clear.
       console.log('Good news — no pwnage found!');
     }
-  })
-  .catch((err) => {
+  } catch (err) {
     // Something went wrong.
     console.log(err.message);
-  });
+  }
+}
+
+main();
 ```
 
 #### Using in the browser
@@ -109,41 +101,24 @@ global namespace prior to being loaded. Therefore, to facilitate usage in
 you are responsible for providing a polyfill. I recommend
 [es6-promise](https://github.com/stefanpenner/es6-promise).
 
-You have several options for using this library in a browser environment:
+You have a couple options for using this library in a browser environment:
 
 1. Bundled
 
    The most efficient and recommended method is to bundle it with client-side
-   code using a module bundler like [webpack](https://webpack.js.org). If your
-   build process honors the `module` field in `package.json`, you can import the
-   ECMAScript module as described [above](#usage). Otherwise, the `main` field
-   resolves to the CommonJS module version.
-
-1. UMD
-
-   There is also a Universal Module Definition (UMD) build provided for usage in
-   the browser. When using this build, an `hibp` object will be added to the
-   browser's `window` object.
-
-   The recommended way to include the UMD build (when using a `<script>` tag) is
-   to use the [unpkg](https://unpkg.com) CDN, specifying the exact version you
-   want. If you don't specify a version, the `latest` tag will be used, which
-   could be dangerous if/when there are breaking changes made to the API. See
-   [unpkg](https://unpkg.com) for details and advanced version specification,
-   but generally you will want to do the following (replacing `x.y.z` with the
-   version you want):
-
-   ```html
-   <script src="https://unpkg.com/hibp@x.y.z"></script>
-   ```
+   code using a module bundler like [webpack](https://webpack.js.org) or
+   [rollup](https://rollupjs.org). You can import the ECMAScript module as
+   described [above](#usage) and your bundler should handle the rest.
 
 1. ESM for Browsers
 
-   Modern browsers now [support](https://caniuse.com/#feat=es6-module) importing
-   ECMAScript modules via `<script type="module">` tags. Like the UMD option
-   above, this build is also available the [unpkg](https://unpkg.com) CDN (and
-   the same versioning rules apply), but you must specify the full path
-   (including the file extension). For example:
+   You can also include the ESM-for-browsers build via the
+   [unpkg](https://unpkg.com) CDN, specifying the exact version you want. If you
+   don't specify a version, the `latest` tag will be used, which could be
+   dangerous if/when there are breaking changes made to the API. See
+   [unpkg](https://unpkg.com) for details and advanced version specification,
+   but generally you will want to do the following (replacing `x.y.z` with the
+   version you want):
 
    ```html
    <script type="module">
@@ -158,8 +133,8 @@ You have several options for using this library in a browser environment:
    </script>
    ```
 
-   For more information on ESM in the browser, check out
-   [Using JS modules in the browser](https://v8.dev/features/modules#browser).
+   For more information on ESM in the browser, check out [Using JS modules in
+   the browser][js-modules].
 
 ## Try It Out
 

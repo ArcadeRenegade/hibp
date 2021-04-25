@@ -1,5 +1,4 @@
 import fetch from 'isomorphic-unfetch';
-import { name, version } from '../../../package.json';
 import { ApiData, ErrorData } from './types';
 import {
   BAD_REQUEST,
@@ -59,13 +58,13 @@ export function fetchFromApi(
 
   // Provide a default User-Agent when running outside the browser
   if (!userAgent && typeof navigator === 'undefined') {
-    headers['User-Agent'] = `${name} ${version}`;
+    headers['User-Agent'] = `${process.env.HIBP_UA}`;
   }
 
   const config = { headers };
-  const url = `${baseUrl.replace(/\/$/g, '')}${endpoint}`;
+  const fullUrl = `${baseUrl.replace(/\/$/g, '')}${endpoint}`;
 
-  return fetch(url, config).then((res) => {
+  return fetch(fullUrl, config).then((res) => {
     if (res.ok) return res.json();
 
     switch (res.status) {

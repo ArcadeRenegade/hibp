@@ -1,5 +1,25 @@
 ## Migration Notes
 
+#### 11.0.0 → 12.0.0 _(the pure ESM migration)_
+
+- As of v12.0.0, this project is now pure ESM. Please see
+  [this gist](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
+  by @sindresorhus for more information.
+
+- If consuming from Node.js, ensure your version of Node is within the new
+  supported range: `^12.20.0 || ^14.13.1 || >=16.0.0`
+
+- The CJS build (`dist/cjs/*`) has been removed. Please update your environment
+  to one that supports ESM.
+
+- The UMD build (`dist/browser/hibp.umd.js`) has been removed. If you were
+  linking to it via `<script>` tag, please switch to `<script type="module">` as
+  demonstrated in the README.
+
+- Deep imports have been removed. They may become available again once the
+  popular bundlers support subpath exports. For now, please import what you need
+  from the package as demonstrated in the README.
+
 #### 10.0.1 → 11.0.0
 
 - `pwnedPasswordRange` now returns an object mapping the matching suffix to a

@@ -1,5 +1,5 @@
 import { Breach } from './api/haveibeenpwned/types';
-import { fetchFromApi } from './api/haveibeenpwned';
+import { fetchFromApi } from './api/haveibeenpwned/fetchFromApi';
 
 /**
  * Fetches all breach events in the system.
@@ -15,31 +15,29 @@ import { fetchFromApi } from './api/haveibeenpwned';
  * @returns {Promise<Breach[]>} a Promise which resolves to an array of breach
  * objects (an empty array if no breaches were found), or rejects with an Error
  * @example
- * breaches()
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await breaches();
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @example
- * breaches({ domain: 'adobe.com' })
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await breaches({ domain: "adobe.com" });
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  */
-export function breaches(
+export async function breaches(
   options: {
     domain?: string;
     baseUrl?: string;

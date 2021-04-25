@@ -1,4 +1,4 @@
-import { fetchFromApi } from './api/pwnedpasswords';
+import { fetchFromApi } from './api/pwnedpasswords/fetchFromApi';
 
 export interface PwnedPasswordSuffixes {
   [suffix: string]: number;
@@ -33,39 +33,40 @@ export interface PwnedPasswordSuffixes {
  * password data set, or rejects with an Error
  *
  * @example
- * pwnedPasswordRange('5BAA6')
- *   .then(results => {
- *     // results will have the following shape:
- *     // {
- *     //   "003D68EB55068C33ACE09247EE4C639306B": 3,
- *     //   "012C192B2F16F82EA0EB9EF18D9D539B0DD": 1,
- *     //   ...
- *     // }
- *   })
+ * try {
+ *   const results = await pwnedPasswordRange("5BAA6");
+ *   // results will have the following shape:
+ *   // {
+ *   //   "003D68EB55068C33ACE09247EE4C639306B": 3,
+ *   //   "012C192B2F16F82EA0EB9EF18D9D539B0DD": 1,
+ *   //   ...
+ *   // }
+ * } catch (err) {
+ *   // ...
+ * }
  * @example
- * const suffix = '1E4C9B93F3F0682250B6CF8331B7EE68FD8';
- * pwnedPasswordRange('5BAA6')
- *   .then(results => (results[suffix] || 0))
- *   .catch(err => {
- *     // ...
- *   });
+ * try {
+ *   const suffix = "1E4C9B93F3F0682250B6CF8331B7EE68FD8";
+ *   const results = await pwnedPasswordRange("5BAA6");
+ *   const numPwns = results[suffix] || 0;
+ * } catch (err) {
+ *   // ...
+ * }
  * @see https://haveibeenpwned.com/api/v3#SearchingPwnedPasswordsByRange
  */
-export function pwnedPasswordRange(
+export async function pwnedPasswordRange(
   prefix: string,
   options: { baseUrl?: string; userAgent?: string } = {},
 ): Promise<PwnedPasswordSuffixes> {
-  return (
-    fetchFromApi(`/range/${encodeURIComponent(prefix)}`, options)
-      // create array from lines of text in response body
-      .then((data) => data.split('\n'))
-      // convert into an object mapping suffix to count for each line
-      .then((results) =>
-        results.reduce<PwnedPasswordSuffixes>((acc, row) => {
-          const [suffix, countString] = row.split(':');
-          acc[suffix] = parseInt(countString, 10);
-          return acc;
-        }, {}),
-      )
+  const data = await fetchFromApi(
+    `/range/${encodeURIComponent(prefix)}`,
+    options,
   );
+  const results = data.split('\n');
+
+  return results.reduce<PwnedPasswordSuffixes>((acc, row) => {
+    const [suffix, countString] = row.split(':');
+    acc[suffix] = parseInt(countString, 10);
+    return acc;
+  }, {});
 }

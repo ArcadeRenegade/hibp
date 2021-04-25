@@ -51,33 +51,33 @@ export interface SearchResults {
  * and a "pastes" key (which can be null or an array of paste objects), or
  * rejects with an Error
  * @example
- * search('foo', { apiKey: 'my-api-key' })
- *   .then(data => {
- *     if (data.breaches || data.pastes) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await search("foo", { apiKey: "my-api-key" });
+ *   if (data.breaches || data.pastes) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @example
- * search('nobody@nowhere.com', { apiKey: 'my-api-key', truncate: false })
- *   .then(data => {
- *     if (data.breaches || data.pastes) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
- *     // ...
+ * try {
+ *   const data = await search("nobody@nowhere.com", {
+ *     apiKey: "my-api-key",
+ *     truncate: false,
  *   });
- *
+ *   if (data.breaches || data.pastes) {
+ *     // ...
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @see https://haveibeenpwned.com/
  */
-export function search(
+export async function search(
   account: string,
   breachOptions: {
     apiKey?: string;
@@ -90,18 +90,13 @@ export function search(
   },
 ): Promise<SearchResults> {
   const { apiKey, baseUrl, userAgent } = breachOptions;
-
-  return Promise.all([
+  const [breaches, pastes] = await Promise.all([
     breachedAccount(account, breachOptions),
     // This email regex is garbage but it seems to be what the API uses:
     /^.+@.+$/.test(account)
       ? pasteAccount(account, { apiKey, baseUrl, userAgent })
       : null,
-  ]).then(
-    // Avoid array destructuring here to prevent need for Babel helpers
-    (promises) => ({
-      breaches: promises[0],
-      pastes: promises[1],
-    }),
-  );
+  ]);
+
+  return { breaches, pastes };
 }

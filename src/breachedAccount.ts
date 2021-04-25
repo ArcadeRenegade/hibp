@@ -1,5 +1,5 @@
 import { Breach } from './api/haveibeenpwned/types';
-import { fetchFromApi } from './api/haveibeenpwned';
+import { fetchFromApi } from './api/haveibeenpwned/fetchFromApi';
 
 /**
  * Fetches breach data for a specific account.
@@ -31,51 +31,48 @@ import { fetchFromApi } from './api/haveibeenpwned';
  * array of breach objects (or null if no breaches were found), or rejects with
  * an Error
  * @example
- * breachedAccount('foo', { apiKey: 'my-api-key' })
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await breachedAccount("foo", { apiKey: "my-api-key" });
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @example
- * breachedAccount('bar', {
- *   includeUnverified: false,
- *   baseUrl: 'https://my-hibp-proxy:8080',
- * })
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
- *     // ...
+ * try {
+ *   const data = await breachedAccount("bar", {
+ *     includeUnverified: false,
+ *     baseUrl: "https://my-hibp-proxy:8080",
  *   });
+ *   if (data) {
+ *     // ...
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  * @example
- * breachedAccount('baz', {
- *   apiKey: 'my-api-key',
- *   domain: 'adobe.com',
- *   truncate: false,
- *   userAgent: 'my-app 1.0'
- * })
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
- *     // ...
+ * try {
+ *   const data = await breachedAccount("baz", {
+ *     apiKey: "my-api-key",
+ *     domain: "adobe.com",
+ *     truncate: false,
+ *     userAgent: "my-app 1.0",
  *   });
+ *   if (data) {
+ *     // ...
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  */
-export function breachedAccount(
+export async function breachedAccount(
   account: string,
   options: {
     apiKey?: string;

@@ -1,5 +1,5 @@
 import { Paste } from './api/haveibeenpwned/types';
-import { fetchFromApi } from './api/haveibeenpwned';
+import { fetchFromApi } from './api/haveibeenpwned/fetchFromApi';
 
 /**
  * An object representing a paste.
@@ -36,19 +36,18 @@ import { fetchFromApi } from './api/haveibeenpwned';
  * array of paste objects (or null if no pastes were found), or rejects with an
  * Error
  * @example
- * pasteAccount('foo@bar.com', { apiKey: 'my-api-key' })
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await pasteAccount("foo@bar.com", { apiKey: "my-api-key" });
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  */
-export function pasteAccount(
+export async function pasteAccount(
   email: string,
   options: { apiKey?: string; baseUrl?: string; userAgent?: string } = {},
 ): Promise<Paste[] | null> {

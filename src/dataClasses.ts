@@ -1,4 +1,4 @@
-import { fetchFromApi } from './api/haveibeenpwned';
+import { fetchFromApi } from './api/haveibeenpwned/fetchFromApi';
 
 /**
  * Fetches all data classes in the system.
@@ -13,19 +13,18 @@ import { fetchFromApi } from './api/haveibeenpwned';
  * array of strings (or null if no data classes were found), or rejects with an
  * Error
  * @example
- * dataClasses()
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await dataClasses();
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  */
-export function dataClasses(
+export async function dataClasses(
   options: { baseUrl?: string; userAgent?: string } = {},
 ): Promise<string[] | null> {
   return fetchFromApi('/dataclasses', options) as Promise<string[] | null>;

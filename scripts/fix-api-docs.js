@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const filename = 'API.md';
 const generatedApiDocs = fs.readFileSync(filename, 'utf8');

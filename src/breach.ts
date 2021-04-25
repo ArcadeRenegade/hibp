@@ -1,5 +1,5 @@
 import { Breach } from './api/haveibeenpwned/types';
-import { fetchFromApi } from './api/haveibeenpwned';
+import { fetchFromApi } from './api/haveibeenpwned/fetchFromApi';
 
 /**
  * An object representing a breach.
@@ -36,19 +36,18 @@ import { fetchFromApi } from './api/haveibeenpwned';
  * object representing a breach (or null if no breach was found), or rejects
  * with an Error
  * @example
- * breach('Adobe')
- *   .then(data => {
- *     if (data) {
- *       // ...
- *     } else {
- *       // ...
- *     }
- *   })
- *   .catch(err => {
+ * try {
+ *   const data = await breach("Adobe");
+ *   if (data) {
  *     // ...
- *   });
+ *   } else {
+ *     // ...
+ *   }
+ * } catch (err) {
+ *   // ...
+ * }
  */
-export function breach(
+export async function breach(
   breachName: string,
   options: { baseUrl?: string; userAgent?: string } = {},
 ): Promise<Breach | null> {
